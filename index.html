@@ -6,14 +6,25 @@
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link
       rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
+      integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"
     />
-    <title>Pokedex jquery</title>
+    <title>Pokedex - GC</title>
   </head>
   <body>
     <div class="pokedex">
-      <h1>Pokedex</h1>
+      <div class="logo">
+        <img src="img/Pokédex_logo.png" />
+      </div>
       <ul class="pokemon-list"></ul>
+      <div class="loader" id="loader">
+        <img src="img/loader by giphy.gif" />
+      </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://unpkg.com/infinite-scroll@3/dist/infinite-scroll.pkgd.min.js"></script>

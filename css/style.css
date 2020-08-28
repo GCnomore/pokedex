@@ -1,5 +1,8 @@
 body {
   margin: 0;
+  /* background-image: url('../img/background.png');
+  background-position: center;
+  background-size: 33%; */
 }
 
 ul {
@@ -11,9 +14,13 @@ li {
   list-style: none;
 }
 
-h1 {
+.logo {
   text-align: center;
-  margin: 0;
+  margin-top: 40px;
+}
+
+.logo img {
+  width: 20%;
 }
 
 .pokedex {
@@ -35,10 +42,114 @@ h1 {
 
 .pokeCard {
   background-color: #f1eadc;
-  padding-bottom: 5px;
+  margin-bottom: 5px;
+  border-radius: 11%;
 }
 
 .pokeCard:hover {
   background-color: #f8f6f2;
   cursor: pointer;
+}
+
+.pokeName {
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+
+.modal {
+  position: fixed;
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgb(223, 90, 90);
+  height: 500px;
+  width: 700px;
+  text-align: center;
+  z-index: 100;
+}
+
+.modal_types,
+.modal_name,
+.modal_statsContainer {
+  text-transform: uppercase;
+}
+
+.modal_contents {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 5%;
+}
+
+.modal_left,
+.modal_right {
+  width: 100%;
+}
+
+.modal_left {
+  text-align: center;
+}
+
+.modal_types {
+  font-size: 30px;
+  font-weight: 600;
+  padding: 15% 0;
+}
+
+.modal_types > li {
+  padding: 5% 0;
+}
+
+.modal_profile,
+.modal_stats {
+  width: 100%;
+}
+
+.modal_profile th {
+  padding: 0 6%;
+}
+
+.modal_stats th {
+  padding: 0 6%;
+}
+
+.modal_id > h1 {
+  text-align: right;
+  padding-right: 3%;
+  font-size: 40px;
+  margin: 0;
+}
+
+.modal img {
+  height: 300px;
+}
+
+.modal_closeBtn {
+  font-size: 40px;
+}
+
+.loader {
+  text-align: center;
+  position: fixed;
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #ffffff;
+}
+
+.loader img {
+  text-align: center;
+  position: fixed;
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: -10%;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.466);
+  opacity: 0.8;
 }
