@@ -41,6 +41,7 @@ var pokemonRepository = (() => {
                 id: response.id,
                 stats: response.stats,
               };
+
               addDetails(pokemons);
             })
             .catch((e) => {
@@ -131,14 +132,16 @@ var pokemonRepository = (() => {
       }" data-types="${pokemon.types}" data-id="${
         pokemon.id
       }" data-hp="${hp}" data-attack="${attack}" data-defense="${defense}" data-speed="${speed}" data-bgColor="${color()}" style="background-color:${color()}">
-          <div class="imgContainer"><img src="${pokemon.img}" /></div>
+          <div class="imgContainer"><img class="pokeImg" src="${
+            pokemon.img
+          }" /></div>
           <div class="pokeName">${pokemon.name}</div>
         </li>`
     );
     pokeList.append(pokeCard);
     // Adding animation to elements
     (function addingStyles() {
-      $('.pokeCard')
+      $('.pokeImg')
         .mouseenter((e) => {
           $(e.target).addClass('animate__heartBeat');
         })
@@ -148,23 +151,25 @@ var pokemonRepository = (() => {
       $('.imgContainer').mousedown((e) => {
         $(e.target).addClass('animate__bounceOut');
       });
+      $('.pokeName').mousedown((e) => {
+        $(e.target).addClass('animate__bounceOut');
+      });
     })();
-    pokemonRepository.handleClick();
   }
 
-  function handleClick() {
-    setTimeout(() => {
-      $('.pokeCard').click(modal);
-    }, 3500);
+  $(window).click((e) => {
+    if (
+      e.target.classList[0] == 'pokeImg' ||
+      e.target.classList[0] == 'pokeName'
+    ) {
+      handleClick(e);
+    }
+  });
 
-    $(window).click((e) => {
-      if ($('.modal_container').length !== 0) {
-        console.log(e.target, $('.modal').length);
-        if (e.target === $('.ul')) {
-          closeModal();
-        }
-      }
-    });
+  function handleClick(e) {
+    setTimeout(() => {
+      $('.pokeCard').click(modal(e));
+    }, 650);
   }
 
   function modal(event) {
@@ -183,7 +188,7 @@ var pokemonRepository = (() => {
   function createModal(data) {
     var types = data.types.split(',');
     var modal = $(`
-      <div class="modal">
+      <div class="modal animate__bounceIn">
         <div class="modal_id">
           <h1>#${data.id}</h1>
         </div>
@@ -230,7 +235,7 @@ var pokemonRepository = (() => {
   }
 
   function closeModal() {
-    $('.modal').hide();
+    $('.modal').remove();
     $('.pokemon-list').show();
     $('.pokemon-list').css('opacity', '1');
   }
@@ -241,40 +246,67 @@ var pokemonRepository = (() => {
 
     //Adding animations
     $('.modal').ready(() => {
-      $('.modal_type').each((index, element) => {
-        $(element).addClass(`animate__bounceInLeft${index}`);
-      });
-    });
-    $('.pokemon-list').css('opacity', '0.2');
-    $('.modal_img').hide();
-    $('.modal_name').hide();
-    $('.modal_id').hide();
-    $('.profile').hide();
-    $('.stats').hide();
-    setTimeout(() => {
-      $('.modal_img').show();
-      $('.modal_name').show();
-      $('.modal_name').addClass('bounceOutDown');
-      $('.modal_img').addClass('bounceInDown');
-      setTimeout(() => {
-        $('.modal_name').hide();
-        $('.modal_img').addClass('tada');
-        $('.modal_id').show();
-        $('.modal_id').addClass('bounceInDown');
-        setTimeout(() => {
-          $('.modal_name').show();
-          $('.modal_name').addClass('rollIn');
-          setTimeout(() => {
-            $('.profile').show();
-            $('.stats').show();
-            $('.profile').addClass('fadeIn');
-            $('.stats').addClass('fadeIn');
-          }, 1000);
-        }, 950);
-      }, 700);
-    }, 400);
+      $('.modal_img').hide();
+      $('.modal_name').hide();
+      $('.modal_id').hide();
+      $('.profile').hide();
+      $('.stats').hide();
+      $('.modal_closeBtn').hide();
+      $('.modal_type').hide();
 
-    $('.modal_closeBtn').click(closeModal);
+      $('.pokemon-list').css('opacity', '0.2');
+
+      $('.modal_type').each((index, element) => {
+        setTimeout(() => {
+          $('.modal_type').show();
+          $(element).addClass(`animate__bounceInLeft${index}`);
+        }, 1500);
+      });
+
+      setTimeout(() => {
+        $('.modal_closeBtn').show();
+        $('.modal_closeBtn').addClass('fadeInUp');
+      }, 1000);
+
+      setTimeout(() => {
+        $('.modal_img').show();
+        $('.modal_name').show();
+        $('.modal_name').addClass('bounceOutDown');
+        $('.modal_img').addClass('bounceInDown');
+        setTimeout(() => {
+          $('.modal_name').hide();
+          $('.modal_img').addClass('tada');
+          $('.modal_id').show();
+          $('.modal_id').addClass('bounceInDown');
+          setTimeout(() => {
+            $('.modal_name').show();
+            $('.modal_name').addClass('rollIn');
+            setTimeout(() => {
+              $('.profile').show();
+              $('.stats').show();
+              $('.profile').addClass('fadeIn');
+              $('.stats').addClass('fadeIn');
+            }, 1000);
+          }, 950);
+        }, 700);
+      }, 400);
+    });
+
+    if ($('body').is($('.modal').parent())) {
+      $(window).click((e) => {
+        setTimeout(() => {
+          if (e.target.parentNode.className == 'pokedex') {
+            closeModal();
+          }
+        });
+      });
+    }
+    $('.modal_closeBtn').click(() => {
+      closeModal();
+    });
+    $('.fa-times-circle').click(() => {
+      closeModal();
+    });
     $(window).keydown((e) => {
       if (e.key === 'Escape') {
         closeModal();
@@ -287,34 +319,44 @@ var pokemonRepository = (() => {
     addListItem,
     addDetails,
     getDetails,
-    handleClick,
     pokemonList: pokemonDetailList,
+    closeModal,
   };
 })();
 
 function init(api) {
   pokemonRepository.loadList(api).then(() => {
     setTimeout(() => {
-      pokemonRepository.pokemonList.forEach((pokemon) => {
+      const data = Array.from(
+        new Set(pokemonRepository.pokemonList.map(JSON.stringify))
+      ).map(JSON.parse);
+
+      //Sort by Pokemon ID
+      var added = data.sort((a, b) => {
+        return a.id - b.id;
+      });
+      added.forEach((pokemon) => {
         pokemonRepository.addListItem(pokemon);
       });
       $('#loader').hide();
     }, 3000);
   });
-  pokemonRepository.handleClick();
 }
 
 //Infinite scroll --- several pokemons with high ID# are missing many info on API
 
 window.addEventListener('scroll', () => {
   const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+
   if (scrollTop + clientHeight >= scrollHeight && scrollTop !== 0) {
     const data = Array.from(
       new Set(pokemonRepository.pokemonList.map(JSON.stringify))
     ).map(JSON.parse);
     var curPage = data.length;
+
     pokemonRepository.loadList(apiUrl(curPage)).then(() => {
       $('#loader').show();
+      pokemonRepository.closeModal();
       setTimeout(() => {
         //Removes duplicates
         const data = Array.from(
@@ -336,6 +378,3 @@ window.addEventListener('scroll', () => {
 });
 
 init(apiUrl(0));
-
-//removed useless codes from infinite scroll
-//need to size up close button container to close modal when clicked outside
