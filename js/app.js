@@ -27,9 +27,6 @@ var pokemonRepository = (() => {
             dataType: 'json',
           })
             .then((response) => {
-              return response;
-            })
-            .then((response) => {
               var type = [];
               for (var i = 0; response.types.length > i; i++) {
                 type.push(response.types[i].type.name);
@@ -61,17 +58,7 @@ var pokemonRepository = (() => {
     pokemonList.push(pokemons);
   }
 
-  function getAll() {
-    return pokemonList;
-  }
-
   function getDetails() {
-    pokemonDetailList.sort((a, b) => {
-      return a.id - b.id;
-    });
-    const data = Array.from(new Set(pokemonDetailList.map(JSON.stringify))).map(
-      JSON.parse
-    );
     return pokemonDetailList;
   }
 
@@ -143,7 +130,7 @@ var pokemonRepository = (() => {
         pokemon.weight
       }" data-types="${pokemon.types}" data-id="${
         pokemon.id
-      }" data-hp="${hp}" data-attack="${attack}" data-defense="${defense}" data-speed="${speed}" style="background-color:${color()}">
+      }" data-hp="${hp}" data-attack="${attack}" data-defense="${defense}" data-speed="${speed}" data-bgColor="${color()}" style="background-color:${color()}">
           <div class="imgContainer"><img src="${pokemon.img}" /></div>
           <div class="pokeName">${pokemon.name}</div>
         </li>`
@@ -162,12 +149,22 @@ var pokemonRepository = (() => {
         $(e.target).addClass('animate__bounceOut');
       });
     })();
+    pokemonRepository.handleClick();
   }
 
   function handleClick() {
     setTimeout(() => {
       $('.pokeCard').click(modal);
     }, 3500);
+
+    $(window).click((e) => {
+      if ($('.modal_container').length !== 0) {
+        console.log(e.target, $('.modal').length);
+        if (e.target === $('.ul')) {
+          closeModal();
+        }
+      }
+    });
   }
 
   function modal(event) {
@@ -192,34 +189,34 @@ var pokemonRepository = (() => {
         </div>
         <div class="modal_contents">
           <div class="modal_left">
-            <ul class="modal_types"></ul>
+            <ul class="modal_types "></ul>
             <table class="modal_profile">
-              <tr>
+              <tr class="profile">
                 <th>Height</th>
                 <th>Weight</th>
               </tr>
-              <tr>
-                <td>${data.height}</td>
-                <td>${data.weight}</td>
+              <tr class="profile">
+                <td>${data.height}M</td>
+                <td>${(data.weight * 0.1).toFixed()}KG</td>
               </tr>
             </table>
             <table class="modal_stats">
               <tr>
-                <th><i class="fas fa-heart"></i></th>
-                <th><i class="fas fa-crosshairs"></i></th>
-                <th><i class="fas fa-shield-alt"></i></th>
-                <th><i class="fas fa-running"></i></th>
+                <th class="stats"><i class="fas fa-heart"></i></th>
+                <th class="stats"><i class="fas fa-crosshairs"></i></th>
+                <th class="stats"><i class="fas fa-shield-alt"></i></th>
+                <th class="stats"><i class="fas fa-running"></i></th>
               </tr>
               <tr>
-                <td>${data.hp}</td>
-                <td>${data.attack}</td>
-                <td>${data.defense}</td>
-                <td>${data.speed}</td>
+                <td class="stats">${data.hp}</td>
+                <td class="stats">${data.attack}</td>
+                <td class="stats">${data.defense}</td>
+                <td class="stats">${data.speed}</td>
               </tr>
             </table>
           </div>
           <div class="modal_right">
-            <img src="${data.bigimg}">
+            <img class="modal_img" src="${data.bigimg}">
             <div class="modal_name"><h1>${data.name}</h1></div>
           </div>
         </div>
@@ -227,37 +224,78 @@ var pokemonRepository = (() => {
       </div>
     `);
     showModal(modal);
-    $('.modal_closeBtn').click(closeModal);
     types.forEach((type) => {
-      $('.modal_types').append(`<li>${type}</li>`);
+      $('.modal_types').append(`<li class="${type} modal_type">${type}</li>`);
     });
   }
 
   function closeModal() {
-    $('.modal').remove();
+    $('.modal').hide();
     $('.pokemon-list').show();
+    $('.pokemon-list').css('opacity', '1');
   }
 
   function showModal(modal) {
+    $('.modal').remove();
     $('body').append(modal);
-    $('.pokemon-list').hide();
+
+    //Adding animations
+    $('.modal').ready(() => {
+      $('.modal_type').each((index, element) => {
+        $(element).addClass(`animate__bounceInLeft${index}`);
+      });
+    });
+    $('.pokemon-list').css('opacity', '0.2');
+    $('.modal_img').hide();
+    $('.modal_name').hide();
+    $('.modal_id').hide();
+    $('.profile').hide();
+    $('.stats').hide();
+    setTimeout(() => {
+      $('.modal_img').show();
+      $('.modal_name').show();
+      $('.modal_name').addClass('bounceOutDown');
+      $('.modal_img').addClass('bounceInDown');
+      setTimeout(() => {
+        $('.modal_name').hide();
+        $('.modal_img').addClass('tada');
+        $('.modal_id').show();
+        $('.modal_id').addClass('bounceInDown');
+        setTimeout(() => {
+          $('.modal_name').show();
+          $('.modal_name').addClass('rollIn');
+          setTimeout(() => {
+            $('.profile').show();
+            $('.stats').show();
+            $('.profile').addClass('fadeIn');
+            $('.stats').addClass('fadeIn');
+          }, 1000);
+        }, 950);
+      }, 700);
+    }, 400);
+
+    $('.modal_closeBtn').click(closeModal);
+    $(window).keydown((e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
   }
 
   return {
     loadList,
-    add,
-    getAll,
     addListItem,
     addDetails,
     getDetails,
     handleClick,
+    pokemonList: pokemonDetailList,
   };
 })();
 
 function init(api) {
   pokemonRepository.loadList(api).then(() => {
     setTimeout(() => {
-      pokemonRepository.getDetails().forEach((pokemon) => {
+      pokemonRepository.pokemonList.forEach((pokemon) => {
         pokemonRepository.addListItem(pokemon);
       });
       $('#loader').hide();
@@ -267,26 +305,24 @@ function init(api) {
 }
 
 //Infinite scroll --- several pokemons with high ID# are missing many info on API
+
 window.addEventListener('scroll', () => {
-  var curPage = pokemonRepository.getDetails().length;
-  var forSplice = () => {
-    if (curPage == 131) {
-      return curPage;
-    }
-    if (curPage > 131) {
-      return curPage - 131;
-    }
-  };
   const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-  console.log(scrollTop, scrollHeight, clientHeight);
   if (scrollTop + clientHeight >= scrollHeight && scrollTop !== 0) {
+    const data = Array.from(
+      new Set(pokemonRepository.pokemonList.map(JSON.stringify))
+    ).map(JSON.parse);
+    var curPage = data.length;
     pokemonRepository.loadList(apiUrl(curPage)).then(() => {
       $('#loader').show();
       setTimeout(() => {
+        //Removes duplicates
         const data = Array.from(
-          new Set(pokemonRepository.getDetails().map(JSON.stringify))
+          new Set(pokemonRepository.pokemonList.map(JSON.stringify))
         ).map(JSON.parse);
-        var cutData = data.splice(forSplice());
+        var cutData = data.splice(curPage);
+
+        //Sort by Pokemon ID
         var added = cutData.sort((a, b) => {
           return a.id - b.id;
         });
@@ -300,3 +336,6 @@ window.addEventListener('scroll', () => {
 });
 
 init(apiUrl(0));
+
+//removed useless codes from infinite scroll
+//need to size up close button container to close modal when clicked outside
