@@ -357,6 +357,7 @@ li {
     box-shadow: none;
   }
   .modal {
+    margin: auto -140px;
     transform: scale(0.5);
   }
   .modal_closeBtn {
