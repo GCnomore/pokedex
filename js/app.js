@@ -64,10 +64,21 @@ var pokemonRepository = (() => {
   }
 
   function addListItem(pokemon) {
-    var hp = pokemon.stats[0].base_stat;
-    var attack = pokemon.stats[1].base_stat;
-    var defense = pokemon.stats[2].base_stat;
-    var speed = pokemon.stats[5].base_stat;
+    var hp;
+    var attack;
+    var defense;
+    var speed;
+    if (pokemon.stats.length === 0) {
+      hp = 'N/A';
+      attack = 'N/A';
+      defense = 'N/A';
+      speed = 'N/A';
+    } else {
+      hp = pokemon.stats[0].base_stat;
+      attack = pokemon.stats[1].base_stat;
+      defense = pokemon.stats[2].base_stat;
+      speed = pokemon.stats[5].base_stat;
+    }
 
     var color = () => {
       if ($.inArray('fire', pokemon.types) !== -1) {
@@ -126,7 +137,7 @@ var pokemonRepository = (() => {
     var pokeList = $('.pokemon-list');
     var pokeCard = $(
       `<li class="pokeCard" data-name="${pokemon.name}" data-bigImg="${
-        pokemon.bigImg
+        pokemon.bigImg ? pokemon.bigImg : pokemon.img
       }" data-height="${pokemon.height}" data-weight="${
         pokemon.weight
       }" data-types="${pokemon.types}" data-id="${
@@ -146,7 +157,7 @@ var pokemonRepository = (() => {
           $(e.target).addClass('animate__heartBeat');
         })
         .mouseleave((e) => {
-          $(e.target).removeClass('animate__heartBeat animate__bounceOut');
+          $(e.target).removeClass('animate__heartBeat');
         });
       $('.imgContainer').mousedown((e) => {
         $(e.target).addClass('animate__bounceOut');
@@ -177,15 +188,15 @@ var pokemonRepository = (() => {
     var data;
     if (clicked.nodeName == 'DIV') {
       data = clicked.parentNode.dataset;
-      createModal(data);
+      createModal(data, clicked);
     }
     if (clicked.nodeName == 'IMG') {
       data = clicked.parentNode.parentNode.dataset;
-      createModal(data);
+      createModal(data, clicked);
     }
   }
 
-  function createModal(data) {
+  function createModal(data, clicked) {
     var types = data.types.split(',');
     var modal = $(`
       <div class="modal animate__bounceIn">
@@ -228,19 +239,19 @@ var pokemonRepository = (() => {
         <div class="modal_closeBtn"><i class="fas fa-times-circle"></i></div>
       </div>
     `);
-    showModal(modal);
+    showModal(modal, clicked);
     types.forEach((type) => {
       $('.modal_types').append(`<li class="${type} modal_type">${type}</li>`);
     });
   }
 
-  function closeModal() {
+  function closeModal(clicked) {
     $('.modal').remove();
-    $('.pokemon-list').show();
     $('.pokemon-list').css('opacity', '1');
+    $(clicked).removeClass('animate__bounceOut');
   }
 
-  function showModal(modal) {
+  function showModal(modal, clicked) {
     $('.modal').remove();
     $('body').append(modal);
 
@@ -296,20 +307,20 @@ var pokemonRepository = (() => {
       $(window).click((e) => {
         setTimeout(() => {
           if (e.target.parentNode.className == 'pokedex') {
-            closeModal();
+            closeModal(clicked);
           }
         });
       });
     }
     $('.modal_closeBtn').click(() => {
-      closeModal();
+      closeModal(clicked);
     });
     $('.fa-times-circle').click(() => {
-      closeModal();
+      closeModal(clicked);
     });
     $(window).keydown((e) => {
       if (e.key === 'Escape') {
-        closeModal();
+        closeModal(clicked);
       }
     });
   }
@@ -356,7 +367,11 @@ window.addEventListener('scroll', () => {
 
     pokemonRepository.loadList(apiUrl(curPage)).then(() => {
       $('#loader').show();
-      pokemonRepository.closeModal();
+      $('.modal').remove();
+      $('.pokemon-list').css('opacity', '1');
+      $('.pokeName').removeClass('animate__bounceOut');
+      $('.imgContainer').removeClass('animate__bounceOut');
+      $('.pokeImg').removeClass('animate__bounceOut');
       setTimeout(() => {
         //Removes duplicates
         const data = Array.from(
