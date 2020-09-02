@@ -3,6 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+      integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+      crossorigin="anonymous"
+    />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link
       rel="stylesheet"
@@ -18,16 +24,80 @@
       href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap"
       rel="stylesheet"
     />
+
     <title>Pokedex - GC</title>
   </head>
   <body>
-    <div class="pokedex">
-      <div class="logo">
-        <img src="img/Pokédex_logo.png" />
+    <div class="logo">
+      <img src="img/Pokédex_logo.png" />
+    </div>
+    <div class="pokedex p-xl-5 p-lg-4 p-3">
+      <div class="pokemon-list container-fluid p-md-3">
+        <div class="row justify-content-center pokerow"></div>
       </div>
-      <ul class="pokemon-list"></ul>
-      <div class="loader" id="loader">
-        <img src="img/loader by giphy.gif" />
+    </div>
+    <div class="loader" id="loader">
+      <img class="img-fluid mx-auto d-block" src="img/loader by giphy.gif" />
+    </div>
+
+    <div
+      class="modal animate__bounceIn"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="pokeId"
+      id="bsModal"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content m-0">
+          <div class="modal-header">
+            <h1 class="modal_id" id="pokeId"></h1>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <i class="fas fa-times-circle modal_closeBtn"></i>
+            </button>
+          </div>
+          <div class="modal_contents m-0">
+            <div class="modal_left">
+              <ul class="modal_types"></ul>
+              <table class="modal_profile">
+                <tr class="profile">
+                  <th>Height</th>
+                  <th>Weight</th>
+                </tr>
+                <tr class="profile">
+                  <td class="profile_height"></td>
+                  <td class="profile_weight"></td>
+                </tr>
+              </table>
+              <table class="modal_stats">
+                <tr>
+                  <th class="stats"><i class="fas fa-heart"></i></th>
+                  <th class="stats"><i class="fas fa-crosshairs"></i></th>
+                  <th class="stats"><i class="fas fa-shield-alt"></i></th>
+                  <th class="stats"><i class="fas fa-running"></i></th>
+                </tr>
+                <tr>
+                  <td class="stats stats_hp"></td>
+                  <td class="stats stats_attack"></td>
+                  <td class="stats stats_defense"></td>
+                  <td class="stats stats_speed"></td>
+                </tr>
+              </table>
+            </div>
+            <div class="modal_right justify-content-center align-middle">
+              <img
+                class="modal_img img-fluid max-width: 100% align-middle justify-content-center"
+              />
+              <div class="modal_name pt-2 text-center">
+                <h1></h1>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
