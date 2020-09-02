@@ -146,7 +146,9 @@ var pokemonRepository = (() => {
         pokemon.id
       }" data-hp="${hp}" data-attack="${attack}" data-defense="${defense}" data-speed="${speed}" data-bgColor="${color()}" style="background-color:${color()}">
           <div class="imgContainer">
-            <img class="pokeImg img-fluid" src="${pokemon.img}" />
+            <img class="pokeImg img-fluid" src="${pokemon.img}" alt="${
+        pokemon.name
+      }'s image" />
           </div>
           <div class="pokeName text-center text-wrap">${pokemon.name}</div>
       </button>`

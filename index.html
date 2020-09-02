@@ -28,6 +28,47 @@
     <title>Pokedex - GC</title>
   </head>
   <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">
+        <img class="nav_img" src="img/Pokédex_logo.png"
+      /></a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="#"
+              >Home <span class="sr-only">(current)</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              target="_blank"
+              href="https://gcnomore.github.io/website-portfolio/"
+              >My Page</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              target="_blank"
+              href="https://github.com/GCnomore"
+              >Github</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
     <div class="logo">
       <img src="img/Pokédex_logo.png" />
     </div>
@@ -76,9 +117,21 @@
               <table class="modal_stats">
                 <tr>
                   <th class="stats"><i class="fas fa-heart"></i></th>
+                  <div class="sr-only">
+                    Selected Pokemon's health point in game
+                  </div>
                   <th class="stats"><i class="fas fa-crosshairs"></i></th>
+                  <div class="sr-only">
+                    Selected Pokemon's attack point in game
+                  </div>
                   <th class="stats"><i class="fas fa-shield-alt"></i></th>
+                  <div class="sr-only">
+                    Selected Pokemon's defense point in game
+                  </div>
                   <th class="stats"><i class="fas fa-running"></i></th>
+                  <div class="sr-only">
+                    Selected Pokemon's speed point in game
+                  </div>
                 </tr>
                 <tr>
                   <td class="stats stats_hp"></td>
@@ -91,6 +144,7 @@
             <div class="modal_right justify-content-center align-middle">
               <img
                 class="modal_img img-fluid max-width: 100% align-middle justify-content-center"
+                alt="Large image of Pokemon"
               />
               <div class="modal_name pt-2 text-center">
                 <h1></h1>
