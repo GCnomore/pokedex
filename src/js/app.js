@@ -168,7 +168,7 @@ var pokemonRepository = (() => {
   }
   function createModal(data) {
     $('.modal_id').html(`#${data.id}`);
-    $('.profile_height').html(`${data.height}M`);
+    $('.profile_height').html(`${data.height * 0.1}M`);
     $('.profile_weight').html(`${(data.weight * 0.1).toFixed()}KG`);
     $('.stats_hp').html(data.hp);
     $('.stats_attack').html(data.attack);
