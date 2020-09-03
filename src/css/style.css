@@ -147,7 +147,6 @@ li {
   right: 0;
   top: -10%;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.466);
   opacity: 0.8;
 }
 
@@ -246,4 +245,26 @@ li {
 .fadeInUp {
   animation: fadeInUp;
   animation-duration: 1s;
+}
+
+@media (min-width: 320px) and (max-width: 425px) {
+  li,
+  th,
+  tr,
+  td,
+  i {
+    font-size: 15px !important;
+  }
+  .modal_name {
+    padding: 0;
+  }
+  .modal_img {
+    height: 200px !important;
+  }
+  .modal_name > h1 {
+    font-size: 20px !important;
+  }
+  .modal_id {
+    font-size: 30px !important;
+  }
 }

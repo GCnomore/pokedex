@@ -80,6 +80,7 @@ var pokemonRepository = (() => {
       speed = pokemon.stats[5].base_stat;
     }
 
+    //Defining background color of each Pokemon card with their types
     var color = () => {
       if ($.inArray('fire', pokemon.types) !== -1) {
         return '#FA5543';
@@ -155,7 +156,7 @@ var pokemonRepository = (() => {
     );
     pokerow.append(pokeCard);
 
-    $(window).mouseenter((e) => {
+    $(window).mouseenter(() => {
       $('.pokeImg')
         .mouseenter((e) => {
           $(e.target).addClass('animate__heartBeat');
@@ -165,7 +166,7 @@ var pokemonRepository = (() => {
         });
     });
   }
-  function createModal(data, clicked) {
+  function createModal(data) {
     $('.modal_id').html(`#${data.id}`);
     $('.profile_height').html(`${data.height}M`);
     $('.profile_weight').html(`${(data.weight * 0.1).toFixed()}KG`);
@@ -197,12 +198,12 @@ $(window).click((e) => {
   if (
     e.target.classList[0] == 'pokeImg' ||
     e.target.classList[0] == 'pokeName' ||
-    e.target.classList[0] == 'pokeCard'
+    e.target.classList[0] == 'pokeCard' ||
+    e.target.classList[0] == 'imgContainer'
   ) {
     var clicked = e.target;
     var data;
     $(clicked).addClass('animate__bounceOut');
-    console.log(clicked.nodeName);
     if (clicked.nodeName == 'DIV') {
       data = clicked.parentNode.dataset;
       pokemonRepository.createModal(data, clicked);
