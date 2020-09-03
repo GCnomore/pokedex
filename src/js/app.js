@@ -136,25 +136,45 @@ var pokemonRepository = (() => {
     };
 
     var pokerow = $('.pokerow');
-    var pokeCard = $(
-      `<button type="button" class="pokeCard btn" data-name="${
-        pokemon.name
-      }" data-bigImg="${
-        pokemon.bigImg ? pokemon.bigImg : pokemon.img
-      }" data-height="${pokemon.height}" data-weight="${
-        pokemon.weight
-      }" data-types="${pokemon.types}" data-id="${
-        pokemon.id
-      }" data-hp="${hp}" data-attack="${attack}" data-defense="${defense}" data-speed="${speed}" data-bgColor="${color()}" style="background-color:${color()}">
-          <div class="imgContainer">
-            <img class="pokeImg img-fluid" src="${pokemon.img}" alt="${
-        pokemon.name
-      }'s image" />
-          </div>
-          <div class="pokeName text-center text-wrap">${pokemon.name}</div>
-      </button>`
+    var pokeCard = document.createElement('button');
+    var imgContainer = document.createElement('div');
+    var pokeImg = document.createElement('img');
+    var pokeName = document.createElement('div');
+
+    $(pokeCard).addClass('pokeCard btn');
+    $(pokeCard).attr('type', 'button');
+    $(pokeCard).attr('data-name', pokemon.name);
+    $(pokeCard).attr(
+      'data-bigImg',
+      pokemon.bigImg ? pokemon.bigImg : pokemon.img
     );
-    pokerow.append(pokeCard);
+    $(pokeCard).attr('data-height', pokemon.height);
+    $(pokeCard).attr('data-weight', pokemon.weight);
+    $(pokeCard).attr('data-types', pokemon.types);
+    $(pokeCard).attr('data-id', pokemon.id);
+    $(pokeCard).attr('data-hp', hp);
+    $(pokeCard).attr('data-attack', attack);
+    $(pokeCard).attr('data-defense', defense);
+    $(pokeCard).attr('data-speed', speed);
+    $(pokeCard).attr('data-bgColor', color());
+
+    $(pokeCard).css('background-color', color());
+
+    $(imgContainer).addClass('imgContainer');
+    $(imgContainer).attr('src', pokemon.img);
+    $(imgContainer).attr('alt', `${pokemon.name}'s image`);
+
+    $(pokeImg).addClass('pokeImg img-fluid');
+    $(pokeImg).attr('src', pokemon.img);
+    $(pokeImg).attr('alt', pokemon.name);
+
+    $(pokeName).addClass('pokeName text-center text-wrap');
+    $(pokeName).html(pokemon.name);
+
+    $(pokeCard).append(imgContainer);
+    $(imgContainer).append(pokeImg);
+    $(pokeCard).append(pokeName);
+    $(pokerow).append(pokeCard);
 
     $(window).mouseenter(() => {
       $('.pokeImg')
@@ -167,15 +187,15 @@ var pokemonRepository = (() => {
     });
   }
   function createModal(data) {
-    $('.modal_id').html(`#${data.id}`);
-    $('.profile_height').html(`${(data.height * 0.1).toFixed(1)}M`);
-    $('.profile_weight').html(`${(data.weight * 0.1).toFixed()}KG`);
-    $('.stats_hp').html(data.hp);
-    $('.stats_attack').html(data.attack);
-    $('.stats_defense').html(data.defense);
-    $('.stats_speed').html(data.speed);
+    $('.modal_id').text(`#${data.id}`);
+    $('.profile_height').text(`${(data.height * 0.1).toFixed(1)}M`);
+    $('.profile_weight').text(`${(data.weight * 0.1).toFixed()}KG`);
+    $('.stats_hp').text(data.hp);
+    $('.stats_attack').text(data.attack);
+    $('.stats_defense').text(data.defense);
+    $('.stats_speed').text(data.speed);
     $('.modal_img').attr('src', data.bigimg);
-    $('.modal_name').html(`<h1>${data.name}</h1>`);
+    $('.modal_pokeName').text(`${data.name}`);
 
     var types = data.types.split(',');
     types.forEach((type) => {
@@ -190,7 +210,6 @@ var pokemonRepository = (() => {
     getDetails,
     createModal,
     pokemonList: pokemonDetailList,
-    // closeModal,
   };
 })();
 
@@ -319,12 +338,6 @@ window.addEventListener('scroll', () => {
 
     pokemonRepository.loadList(apiUrl(curPage)).then(() => {
       $('#loader').show();
-      // $('.modal').remove();
-      // $('body').removeClass('modal-open');
-      // $('.modal-backdrop').remove();
-      // $('.pokeName').removeClass('animate__bounceOut');
-      // $('.imgContainer').removeClass('animate__bounceOut');
-      // $('.pokeImg').removeClass('animate__bounceOut');
       setTimeout(() => {
         //Removes duplicates
         const data = Array.from(
