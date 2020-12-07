@@ -1,19 +1,18 @@
-var apiUrl = (page) => {
+const apiUrl = (page) => {
   return `https://pokeapi.co/api/v2/pokemon/?offset=${page}&limit=131`;
 };
-var pokemonRepository = (() => {
-  var pokemonList = [];
-  var pokemonDetailList = [];
+const pokemonRepository = (() => {
+  let pokemonList = [];
+  let pokemonDetailList = [];
 
   function loadList(apiUrl) {
-    var pokemons = {};
     return fetch(apiUrl)
       .then((response) => {
         return response.json();
       })
       .then((response) => {
         response.results.forEach((pokemon) => {
-          pokemons = {
+          const pokemons = {
             name: pokemon.name,
             detailUrl: pokemon.url,
           };
@@ -21,17 +20,16 @@ var pokemonRepository = (() => {
         });
       })
       .then(() => {
-        pokemonList.forEach((pokemon) => {
+        pokemonList.map((pokemon) => {
           fetch(pokemon.detailUrl)
             .then((response) => {
               return response.json();
             })
             .then((response) => {
-              var type = [];
-              for (var i = 0; response.types.length > i; i++) {
-                type.push(response.types[i].type.name);
-              }
-              var pokemons = {
+              const type = response.types.map((types) => {
+                return types.type.name;
+              });
+              const pokemons = {
                 name: response.name,
                 img: response.sprites.front_default,
                 bigImg: response.sprites.other.dream_world.front_default,
@@ -41,7 +39,6 @@ var pokemonRepository = (() => {
                 id: response.id,
                 stats: response.stats,
               };
-
               addDetails(pokemons);
             })
             .catch((e) => {
@@ -64,10 +61,10 @@ var pokemonRepository = (() => {
   }
 
   function addListItem(pokemon) {
-    var hp;
-    var attack;
-    var defense;
-    var speed;
+    let hp;
+    let attack;
+    let defense;
+    let speed;
     if (pokemon.stats.length === 0) {
       hp = 'N/A';
       attack = 'N/A';
@@ -81,7 +78,7 @@ var pokemonRepository = (() => {
     }
 
     //Defining background color of each Pokemon card with their types
-    var color = () => {
+    const color = () => {
       if ($.inArray('fire', pokemon.types) !== -1) {
         return '#FA5543';
       }
@@ -135,11 +132,11 @@ var pokemonRepository = (() => {
       }
     };
 
-    var pokerow = $('.pokerow');
-    var pokeCard = document.createElement('button');
-    var imgContainer = document.createElement('div');
-    var pokeImg = document.createElement('img');
-    var pokeName = document.createElement('div');
+    const pokerow = $('.pokerow');
+    const pokeCard = document.createElement('button');
+    const imgContainer = document.createElement('div');
+    const pokeImg = document.createElement('img');
+    const pokeName = document.createElement('div');
 
     $(pokeCard).addClass('pokeCard btn');
     $(pokeCard).attr('type', 'button');
@@ -197,7 +194,7 @@ var pokemonRepository = (() => {
     $('.modal_img').attr('src', data.bigimg);
     $('.modal_pokeName').text(`${data.name}`);
 
-    var types = data.types.split(',');
+    const types = data.types.split(',');
     types.forEach((type) => {
       $('.modal_types').append(`<li class="${type} modal_type">${type}</li>`);
     });
@@ -214,14 +211,14 @@ var pokemonRepository = (() => {
 })();
 
 $(window).click((e) => {
+  let clicked = e.target;
+  let data;
   if (
     e.target.classList[0] == 'pokeImg' ||
     e.target.classList[0] == 'pokeName' ||
     e.target.classList[0] == 'pokeCard' ||
     e.target.classList[0] == 'imgContainer'
   ) {
-    var clicked = e.target;
-    var data;
     $(clicked).addClass('animate__bounceOut');
     if (clicked.nodeName == 'DIV') {
       data = clicked.parentNode.dataset;
@@ -291,7 +288,7 @@ $(window).click((e) => {
   }
 
   //When modal hides
-  $('#bsModal').on('hide.bs.modal', function () {
+  $('#bsModal').on('hide.bs.modal', () => {
     $(clicked).removeClass('animate__bounceOut');
     $('.modal_type').removeClass('animate__bounceInLeft');
     $('.modal_closeBtn').removeClass('fadeInDown');
@@ -327,26 +324,26 @@ function init(api) {
 
 //Infinite scroll --- several pokemons with high ID# are missing many info on API
 
-window.addEventListener('scroll', () => {
-  const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-
-  if (scrollTop + clientHeight >= scrollHeight && scrollTop !== 0) {
+$(window).on('scroll', () => {
+  const { scrollHeight } = document.documentElement;
+  const scrollPos = $(window).height() + $(window).scrollTop();
+  if ((scrollHeight - scrollPos) / scrollHeight == 0) {
     const data = Array.from(
       new Set(pokemonRepository.pokemonList.map(JSON.stringify))
     ).map(JSON.parse);
-    var curPage = data.length;
+    const curPage = data.length;
 
-    pokemonRepository.loadList(apiUrl(curPage)).then(() => {
+    pokemonRepository.loadList(apiUrl(curPage)).then(async () => {
       $('#loader').show();
       setTimeout(() => {
         //Removes duplicates
         const data = Array.from(
           new Set(pokemonRepository.pokemonList.map(JSON.stringify))
         ).map(JSON.parse);
-        var cutData = data.splice(curPage);
+        const cutData = data.splice(curPage);
 
         //Sort by Pokemon ID
-        var added = cutData.sort((a, b) => {
+        const added = cutData.sort((a, b) => {
           return a.id - b.id;
         });
         added.forEach((pokemon) => {
