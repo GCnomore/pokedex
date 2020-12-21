@@ -328,18 +328,15 @@ $(window).on('scroll', () => {
   const { scrollHeight } = document.documentElement;
   const scrollPos = $(window).height() + $(window).scrollTop();
   if ((scrollHeight - scrollPos) / scrollHeight == 0) {
-    const data = Array.from(
-      new Set(pokemonRepository.pokemonList.map(JSON.stringify))
-    ).map(JSON.parse);
+    //Removes duplicates
+    const data = [
+      ...new Set(pokemonRepository.pokemonList.map(JSON.stringify)),
+    ].map(JSON.parse);
     const curPage = data.length;
 
     pokemonRepository.loadList(apiUrl(curPage)).then(async () => {
       $('#loader').show();
       setTimeout(() => {
-        //Removes duplicates
-        const data = Array.from(
-          new Set(pokemonRepository.pokemonList.map(JSON.stringify))
-        ).map(JSON.parse);
         const cutData = data.splice(curPage);
 
         //Sort by Pokemon ID
