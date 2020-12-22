@@ -357,7 +357,7 @@ $(document).ready(() => {
   $('.searchBox').on('keyup', function () {
     var value = $(this).val().toLowerCase();
 
-    $('.pokerow button').filter(function () {
+    $('.pokerow :button').filter(function () {
       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
     });
   });
