@@ -77,7 +77,7 @@ const pokemonRepository = (() => {
       speed = pokemon.stats[5].base_stat;
     }
 
-    //Defining background color of each Pokemon card with their types
+    // Defining background color of each Pokemon card with their types
     const color = () => {
       if ($.inArray('fire', pokemon.types) !== -1) {
         return '#FA5543';
@@ -237,9 +237,9 @@ $(window).click((e) => {
       $('#bsModal').modal('show');
     }, 650);
 
-    //When modal shows
+    // When modal shows
     $('#bsModal').on('show.bs.modal', function () {
-      //Adding animations
+      // Adding animations
       $('.modal').ready(() => {
         $('.modal_img').hide();
         $('.modal_name').hide();
@@ -287,7 +287,7 @@ $(window).click((e) => {
     });
   }
 
-  //When modal hides
+  // When modal hides
   $('#bsModal').on('hide.bs.modal', () => {
     $(clicked).removeClass('animate__bounceOut');
     $('.modal_type').removeClass('animate__bounceInLeft');
@@ -322,13 +322,13 @@ function init(api) {
   });
 }
 
-//Infinite scroll --- several pokemons with high ID# are missing many info on API
+// Infinite scroll --- several pokemons with high ID# are missing many info on API
 
 $(window).on('scroll', () => {
   const { scrollHeight } = document.documentElement;
   const scrollPos = $(window).height() + $(window).scrollTop();
   if ((scrollHeight - scrollPos) / scrollHeight == 0) {
-    //Removes duplicates
+    // Removes duplicates
     const data = [
       ...new Set(pokemonRepository.pokemonList.map(JSON.stringify)),
     ].map(JSON.parse);
@@ -339,7 +339,7 @@ $(window).on('scroll', () => {
       setTimeout(() => {
         const cutData = data.splice(curPage);
 
-        //Sort by Pokemon ID
+        // Sort by Pokemon ID
         const added = cutData.sort((a, b) => {
           return a.id - b.id;
         });
@@ -350,6 +350,17 @@ $(window).on('scroll', () => {
       }, 3000);
     });
   }
+});
+
+// Search box
+$(document).ready(() => {
+  $('.searchBox').on('keyup', function () {
+    var value = $(this).val().toLowerCase();
+
+    $('.pokerow button').filter(function () {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+    });
+  });
 });
 
 init(apiUrl(0));

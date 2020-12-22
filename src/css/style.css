@@ -267,4 +267,20 @@ li {
   .modal_id {
     font-size: 30px !important;
   }
+  .searchBox {
+    font-size: 10px;
+  }
+}
+
+.seachWrap {
+  width: 100%;
+  padding-top: 5rem;
+}
+.searchForm {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.searchBox {
+  width: 40%;
 }
