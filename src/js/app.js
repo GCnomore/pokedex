@@ -66,10 +66,10 @@ const pokemonRepository = (() => {
     let defense;
     let speed;
     if (pokemon.stats.length === 0) {
-      hp = 'N/A';
-      attack = 'N/A';
-      defense = 'N/A';
-      speed = 'N/A';
+      hp = "N/A";
+      attack = "N/A";
+      defense = "N/A";
+      speed = "N/A";
     } else {
       hp = pokemon.stats[0].base_stat;
       attack = pokemon.stats[1].base_stat;
@@ -79,93 +79,93 @@ const pokemonRepository = (() => {
 
     // Defining background color of each Pokemon card with their types
     const color = () => {
-      if ($.inArray('fire', pokemon.types) !== -1) {
-        return '#FA5543';
+      if ($.inArray("fire", pokemon.types) !== -1) {
+        return "#FA5543";
       }
-      if ($.inArray('poison', pokemon.types) !== -1) {
-        return '#A65B9E';
+      if ($.inArray("poison", pokemon.types) !== -1) {
+        return "#A65B9E";
       }
-      if ($.inArray('psychic', pokemon.types) !== -1) {
-        return '#FA65B5';
+      if ($.inArray("psychic", pokemon.types) !== -1) {
+        return "#FA65B5";
       }
-      if ($.inArray('grass', pokemon.types) !== -1) {
-        return '#8CD851';
+      if ($.inArray("grass", pokemon.types) !== -1) {
+        return "#8CD851";
       }
-      if ($.inArray('ground', pokemon.types) !== -1) {
-        return '#E8C755';
+      if ($.inArray("ground", pokemon.types) !== -1) {
+        return "#E8C755";
       }
-      if ($.inArray('ice', pokemon.types) !== -1) {
-        return '#96F1FF';
+      if ($.inArray("ice", pokemon.types) !== -1) {
+        return "#96F1FF";
       }
-      if ($.inArray('rock', pokemon.types) !== -1) {
-        return '#CDBC72';
+      if ($.inArray("rock", pokemon.types) !== -1) {
+        return "#CDBC72";
       }
-      if ($.inArray('dragon', pokemon.types) !== -1) {
-        return '#8874FF';
+      if ($.inArray("dragon", pokemon.types) !== -1) {
+        return "#8874FF";
       }
-      if ($.inArray('water', pokemon.types) !== -1) {
-        return '#56AEFF';
+      if ($.inArray("water", pokemon.types) !== -1) {
+        return "#56AEFF";
       }
-      if ($.inArray('bug', pokemon.types) !== -1) {
-        return '#C2D120';
+      if ($.inArray("bug", pokemon.types) !== -1) {
+        return "#C2D120";
       }
-      if ($.inArray('dark', pokemon.types) !== -1) {
-        return '#8A6955';
+      if ($.inArray("dark", pokemon.types) !== -1) {
+        return "#8A6955";
       }
-      if ($.inArray('fighting', pokemon.types) !== -1) {
-        return '#A75544';
+      if ($.inArray("fighting", pokemon.types) !== -1) {
+        return "#A75544";
       }
-      if ($.inArray('ghost', pokemon.types) !== -1) {
-        return '#7874D4';
+      if ($.inArray("ghost", pokemon.types) !== -1) {
+        return "#7874D4";
       }
-      if ($.inArray('steel', pokemon.types) !== -1) {
-        return '#C4C2DB';
+      if ($.inArray("steel", pokemon.types) !== -1) {
+        return "#C4C2DB";
       }
-      if ($.inArray('flying', pokemon.types) !== -1) {
-        return '#79A4FF';
+      if ($.inArray("flying", pokemon.types) !== -1) {
+        return "#79A4FF";
       }
-      if ($.inArray('electric', pokemon.types) !== -1) {
-        return '#FDE53C';
+      if ($.inArray("electric", pokemon.types) !== -1) {
+        return "#FDE53C";
       }
-      if ($.inArray('fairy', pokemon.types) !== -1) {
-        return '#F9AEFF';
+      if ($.inArray("fairy", pokemon.types) !== -1) {
+        return "#F9AEFF";
       }
     };
 
-    const pokerow = $('.pokerow');
-    const pokeCard = document.createElement('button');
-    const imgContainer = document.createElement('div');
-    const pokeImg = document.createElement('img');
-    const pokeName = document.createElement('div');
+    const pokerow = $(".pokerow");
+    const pokeCard = document.createElement("button");
+    const imgContainer = document.createElement("div");
+    const pokeImg = document.createElement("img");
+    const pokeName = document.createElement("div");
 
-    $(pokeCard).addClass('pokeCard btn');
-    $(pokeCard).attr('type', 'button');
-    $(pokeCard).attr('data-name', pokemon.name);
+    $(pokeCard).addClass("pokeCard btn");
+    $(pokeCard).attr("type", "button");
+    $(pokeCard).attr("data-name", pokemon.name);
     $(pokeCard).attr(
-      'data-bigImg',
+      "data-bigImg",
       pokemon.bigImg ? pokemon.bigImg : pokemon.img
     );
-    $(pokeCard).attr('data-height', pokemon.height);
-    $(pokeCard).attr('data-weight', pokemon.weight);
-    $(pokeCard).attr('data-types', pokemon.types);
-    $(pokeCard).attr('data-id', pokemon.id);
-    $(pokeCard).attr('data-hp', hp);
-    $(pokeCard).attr('data-attack', attack);
-    $(pokeCard).attr('data-defense', defense);
-    $(pokeCard).attr('data-speed', speed);
-    $(pokeCard).attr('data-bgColor', color());
+    $(pokeCard).attr("data-height", pokemon.height);
+    $(pokeCard).attr("data-weight", pokemon.weight);
+    $(pokeCard).attr("data-types", pokemon.types);
+    $(pokeCard).attr("data-id", pokemon.id);
+    $(pokeCard).attr("data-hp", hp);
+    $(pokeCard).attr("data-attack", attack);
+    $(pokeCard).attr("data-defense", defense);
+    $(pokeCard).attr("data-speed", speed);
+    $(pokeCard).attr("data-bgColor", color());
 
-    $(pokeCard).css('background-color', color());
+    $(pokeCard).css("background-color", color());
 
-    $(imgContainer).addClass('imgContainer');
-    $(imgContainer).attr('src', pokemon.img);
-    $(imgContainer).attr('alt', `${pokemon.name}'s image`);
+    $(imgContainer).addClass("imgContainer");
+    $(imgContainer).attr("src", pokemon.img);
+    $(imgContainer).attr("alt", `${pokemon.name}'s image`);
 
-    $(pokeImg).addClass('pokeImg img-fluid');
-    $(pokeImg).attr('src', pokemon.img);
-    $(pokeImg).attr('alt', pokemon.name);
+    $(pokeImg).addClass("pokeImg img-fluid");
+    $(pokeImg).attr("src", pokemon.img);
+    $(pokeImg).attr("alt", pokemon.name);
 
-    $(pokeName).addClass('pokeName text-center text-wrap');
+    $(pokeName).addClass("pokeName text-center text-wrap");
     $(pokeName).html(pokemon.name);
 
     $(pokeCard).append(imgContainer);
@@ -174,29 +174,29 @@ const pokemonRepository = (() => {
     $(pokerow).append(pokeCard);
 
     $(window).mouseenter(() => {
-      $('.pokeImg')
+      $(".pokeImg")
         .mouseenter((e) => {
-          $(e.target).addClass('animate__heartBeat');
+          $(e.target).addClass("animate__heartBeat");
         })
         .mouseleave((e) => {
-          $(e.target).removeClass('animate__heartBeat');
+          $(e.target).removeClass("animate__heartBeat");
         });
     });
   }
   function createModal(data) {
-    $('.modal_id').text(`#${data.id}`);
-    $('.profile_height').text(`${(data.height * 0.1).toFixed(1)}M`);
-    $('.profile_weight').text(`${(data.weight * 0.1).toFixed()}KG`);
-    $('.stats_hp').text(data.hp);
-    $('.stats_attack').text(data.attack);
-    $('.stats_defense').text(data.defense);
-    $('.stats_speed').text(data.speed);
-    $('.modal_img').attr('src', data.bigimg);
-    $('.modal_pokeName').text(`${data.name}`);
+    $(".modal_id").text(`#${data.id}`);
+    $(".profile_height").text(`${(data.height * 0.1).toFixed(1)}M`);
+    $(".profile_weight").text(`${(data.weight * 0.1).toFixed()}KG`);
+    $(".stats_hp").text(data.hp);
+    $(".stats_attack").text(data.attack);
+    $(".stats_defense").text(data.defense);
+    $(".stats_speed").text(data.speed);
+    $(".modal_img").attr("src", data.bigimg);
+    $(".modal_pokeName").text(`${data.name}`);
 
-    const types = data.types.split(',');
+    const types = data.types.split(",");
     types.forEach((type) => {
-      $('.modal_types').append(`<li class="${type} modal_type">${type}</li>`);
+      $(".modal_types").append(`<li class="${type} modal_type">${type}</li>`);
     });
   }
 
@@ -214,92 +214,92 @@ $(window).click((e) => {
   let clicked = e.target;
   let data;
   if (
-    e.target.classList[0] == 'pokeImg' ||
-    e.target.classList[0] == 'pokeName' ||
-    e.target.classList[0] == 'pokeCard' ||
-    e.target.classList[0] == 'imgContainer'
+    e.target.classList[0] == "pokeImg" ||
+    e.target.classList[0] == "pokeName" ||
+    e.target.classList[0] == "pokeCard" ||
+    e.target.classList[0] == "imgContainer"
   ) {
-    $(clicked).addClass('animate__bounceOut');
-    if (clicked.nodeName == 'DIV') {
+    $(clicked).addClass("animate__bounceOut");
+    if (clicked.nodeName == "DIV") {
       data = clicked.parentNode.dataset;
       pokemonRepository.createModal(data, clicked);
     }
-    if (clicked.nodeName == 'IMG') {
+    if (clicked.nodeName == "IMG") {
       data = clicked.parentNode.parentNode.dataset;
       pokemonRepository.createModal(data, clicked);
     }
-    if (clicked.nodeName == 'BUTTON') {
+    if (clicked.nodeName == "BUTTON") {
       data = clicked.dataset;
       pokemonRepository.createModal(data, clicked);
     }
 
     setTimeout(() => {
-      $('#bsModal').modal('show');
+      $("#bsModal").modal("show");
     }, 650);
 
     // When modal shows
-    $('#bsModal').on('show.bs.modal', function () {
+    $("#bsModal").on("show.bs.modal", function () {
       // Adding animations
-      $('.modal').ready(() => {
-        $('.modal_img').hide();
-        $('.modal_name').hide();
-        $('.modal_id').hide();
-        $('.profile').hide();
-        $('.stats').hide();
-        $('.modal_closeBtn').hide();
-        $('.modal_type').hide();
+      $(".modal").ready(() => {
+        $(".modal_img").hide();
+        $(".modal_name").hide();
+        $(".modal_id").hide();
+        $(".profile").hide();
+        $(".stats").hide();
+        $(".modal_closeBtn").hide();
+        $(".modal_type").hide();
 
-        $('.modal_type').each((index, element) => {
+        $(".modal_type").each((index, element) => {
           setTimeout(() => {
-            $('.modal_type').show();
+            $(".modal_type").show();
             $(element).addClass(`animate__bounceInLeft${index}`);
           }, 1500);
         });
 
         setTimeout(() => {
-          $('.modal_closeBtn').show();
-          $('.modal_closeBtn').addClass('fadeInDown');
+          $(".modal_closeBtn").show();
+          $(".modal_closeBtn").addClass("fadeInDown");
         }, 1000);
 
         setTimeout(() => {
-          $('.modal_img').show();
-          $('.modal_name').show();
-          $('.modal_name').addClass('bounceOutDown');
-          $('.modal_img').addClass('bounceInDown');
+          $(".modal_img").show();
+          $(".modal_name").show();
+          $(".modal_name").addClass("bounceOutDown");
+          $(".modal_img").addClass("bounceInDown");
         }, 500);
         setTimeout(() => {
-          $('.modal_name').hide();
-          $('.modal_img').addClass('tada');
-          $('.modal_id').show();
-          $('.modal_id').addClass('bounceInDown');
+          $(".modal_name").hide();
+          $(".modal_img").addClass("tada");
+          $(".modal_id").show();
+          $(".modal_id").addClass("bounceInDown");
         }, 800);
         setTimeout(() => {
-          $('.modal_name').show();
-          $('.modal_name').addClass('rollIn');
+          $(".modal_name").show();
+          $(".modal_name").addClass("rollIn");
         }, 950);
         setTimeout(() => {
-          $('.profile').show();
-          $('.stats').show();
-          $('.profile').addClass('fadeIn');
-          $('.stats').addClass('fadeIn');
+          $(".profile").show();
+          $(".stats").show();
+          $(".profile").addClass("fadeIn");
+          $(".stats").addClass("fadeIn");
         }, 2000);
       });
     });
   }
 
   // When modal hides
-  $('#bsModal').on('hide.bs.modal', () => {
-    $(clicked).removeClass('animate__bounceOut');
-    $('.modal_type').removeClass('animate__bounceInLeft');
-    $('.modal_closeBtn').removeClass('fadeInDown');
-    $('.modal_name').removeClass('bounceOutDown');
-    $('.modal_img').removeClass('bounceInDown');
-    $('.modal_img').removeClass('tada');
-    $('.modal_id').removeClass('bounceInDown');
-    $('.modal_name').removeClass('rollIn');
-    $('.profile').removeClass('fadeIn');
-    $('.stats').removeClass('fadeIn');
-    $('.modal_type').remove();
+  $("#bsModal").on("hide.bs.modal", () => {
+    $(clicked).removeClass("animate__bounceOut");
+    $(".modal_type").removeClass("animate__bounceInLeft");
+    $(".modal_closeBtn").removeClass("fadeInDown");
+    $(".modal_name").removeClass("bounceOutDown");
+    $(".modal_img").removeClass("bounceInDown");
+    $(".modal_img").removeClass("tada");
+    $(".modal_id").removeClass("bounceInDown");
+    $(".modal_name").removeClass("rollIn");
+    $(".profile").removeClass("fadeIn");
+    $(".stats").removeClass("fadeIn");
+    $(".modal_type").remove();
   });
 });
 
@@ -317,14 +317,14 @@ function init(api) {
       added.forEach((pokemon) => {
         pokemonRepository.addListItem(pokemon);
       });
-      $('#loader').hide();
+      $("#loader").hide();
     }, 3000);
   });
 }
 
 // Infinite scroll --- several pokemons with high ID# are missing many info on API
 
-$(window).on('scroll', () => {
+$(window).on("scroll", () => {
   const { scrollHeight } = document.documentElement;
   const scrollPos = $(window).height() + $(window).scrollTop();
   if ((scrollHeight - scrollPos) / scrollHeight == 0) {
@@ -335,8 +335,11 @@ $(window).on('scroll', () => {
     const curPage = data.length;
 
     pokemonRepository.loadList(apiUrl(curPage)).then(async () => {
-      $('#loader').show();
+      $("#loader").show();
       setTimeout(() => {
+        const data = [
+          ...new Set(pokemonRepository.pokemonList.map(JSON.stringify)),
+        ].map(JSON.parse);
         const cutData = data.splice(curPage);
 
         // Sort by Pokemon ID
@@ -346,7 +349,7 @@ $(window).on('scroll', () => {
         added.forEach((pokemon) => {
           pokemonRepository.addListItem(pokemon);
         });
-        $('#loader').hide();
+        $("#loader").hide();
       }, 3000);
     });
   }
@@ -354,10 +357,10 @@ $(window).on('scroll', () => {
 
 // Search box
 $(document).ready(() => {
-  $('.searchBox').on('keyup', function () {
+  $(".searchBox").on("keyup", function () {
     var value = $(this).val().toLowerCase();
 
-    $('.pokerow :button').filter(function () {
+    $(".pokerow :button").filter(function () {
       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
     });
   });
