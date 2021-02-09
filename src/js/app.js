@@ -5,62 +5,39 @@ const pokemonRepository = (() => {
   let pokemonList = [];
   let pokemonDetailList = [];
 
-  function loadList(apiUrl) {
-    return fetch(apiUrl)
-      .then((response) => {
-        return response.json();
-      })
-      .then((response) => {
-        response.results.forEach((pokemon) => {
-          const pokemons = {
-            name: pokemon.name,
-            detailUrl: pokemon.url,
-          };
-          add(pokemons);
-        });
-      })
-      .then(() => {
-        pokemonList.map((pokemon) => {
-          fetch(pokemon.detailUrl)
-            .then((response) => {
-              return response.json();
-            })
-            .then((response) => {
-              const type = response.types.map((types) => {
-                return types.type.name;
-              });
-              const pokemons = {
-                name: response.name,
-                img: response.sprites.front_default,
-                bigImg: response.sprites.other.dream_world.front_default,
-                height: response.height,
-                weight: response.weight,
-                types: type,
-                id: response.id,
-                stats: response.stats,
-              };
-              addDetails(pokemons);
-            })
-            .catch((e) => {
-              console.error(e);
-            });
-        });
+  async function loadList(apiUrl) {
+    let fetchedData = await (await fetch(apiUrl)).json();
+    await fetchedData.results.forEach(async (pokemon) => {
+      await add({
+        name: pokemon.name,
+        detaillUrl: pokemon.url,
       });
+    });
+    await pokemonList.map(async (pokemon) => {
+      const pokemonDetails = await (await fetch(pokemon.detaillUrl)).json();
+      await addDetails({
+        name: pokemonDetails.name,
+        img: pokemonDetails.sprites.front_default,
+        bigImg: pokemonDetails.sprites.other.dream_world.front_default,
+        height: pokemonDetails.height,
+        weight: pokemonDetails.weight,
+        types: pokemonDetails.types.map((item) => item.type.name),
+        id: pokemonDetails.id,
+        stats: pokemonDetails.stats,
+      });
+    });
   }
 
-  function addDetails(pokemons) {
-    pokemonDetailList.push(pokemons);
+  async function addDetails(pokemons) {
+    await pokemonDetailList.push(pokemons);
+    pokemonDetailList = await pokemonDetailList.sort((a, b) => a.id - b.id);
   }
 
-  function add(pokemons) {
-    pokemonList.push(pokemons);
+  async function add(pokemons) {
+    await pokemonList.push(pokemons);
   }
 
-  function getDetails() {
-    return pokemonDetailList;
-  }
-
-  function addListItem(pokemon) {
+  async function addListItem(pokemon) {
     let hp;
     let attack;
     let defense;
@@ -133,10 +110,10 @@ const pokemonRepository = (() => {
     };
 
     const pokerow = $(".pokerow");
-    const pokeCard = document.createElement("button");
-    const imgContainer = document.createElement("div");
-    const pokeImg = document.createElement("img");
-    const pokeName = document.createElement("div");
+    const pokeCard = await document.createElement("button");
+    const imgContainer = await document.createElement("div");
+    const pokeImg = await document.createElement("img");
+    const pokeName = await document.createElement("div");
 
     $(pokeCard).addClass("pokeCard btn");
     $(pokeCard).attr("type", "button");
@@ -168,10 +145,10 @@ const pokemonRepository = (() => {
     $(pokeName).addClass("pokeName text-center text-wrap");
     $(pokeName).html(pokemon.name);
 
-    $(pokeCard).append(imgContainer);
-    $(imgContainer).append(pokeImg);
-    $(pokeCard).append(pokeName);
-    $(pokerow).append(pokeCard);
+    await $(pokeCard).append(imgContainer);
+    await $(imgContainer).append(pokeImg);
+    await $(pokeCard).append(pokeName);
+    await $(pokerow).append(pokeCard);
 
     $(window).mouseenter(() => {
       $(".pokeImg")
@@ -203,8 +180,6 @@ const pokemonRepository = (() => {
   return {
     loadList,
     addListItem,
-    addDetails,
-    getDetails,
     createModal,
     pokemonList: pokemonDetailList,
   };
@@ -303,18 +278,18 @@ $(window).click((e) => {
   });
 });
 
-function init(api) {
+function init(api, curpage) {
+  $("#loader").show();
   pokemonRepository.loadList(api).then(() => {
-    setTimeout(() => {
-      const data = Array.from(
-        new Set(pokemonRepository.pokemonList.map(JSON.stringify))
-      ).map(JSON.parse);
+    curpage
+      ? (pokemonRepository.pokemonList = Array.from(
+          new Set(pokemonRepository.pokemonList.map(JSON.stringify))
+        ).map(JSON.parse))
+      : null;
 
-      //Sort by Pokemon ID
-      var added = data.sort((a, b) => {
-        return a.id - b.id;
-      });
-      added.forEach((pokemon) => {
+    console.log(pokemonRepository.pokemonList);
+    setTimeout(() => {
+      pokemonRepository.pokemonList.forEach((pokemon) => {
         pokemonRepository.addListItem(pokemon);
       });
       $("#loader").hide();
@@ -327,7 +302,7 @@ function init(api) {
 $(window).on("scroll", () => {
   const { scrollHeight } = document.documentElement;
   const scrollPos = $(window).height() + $(window).scrollTop();
-  if ((scrollHeight - scrollPos) / scrollHeight == 0) {
+  if ((scrollHeight - scrollPos) / scrollHeight < 0.001) {
     // Removes duplicates
     const data = [
       ...new Set(pokemonRepository.pokemonList.map(JSON.stringify)),
