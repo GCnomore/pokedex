@@ -1,165 +1,182 @@
 const apiUrl = (page) => {
   return `https://pokeapi.co/api/v2/pokemon/?offset=${page}&limit=131`;
 };
+
 const pokemonRepository = (() => {
   let pokemonList = [];
-  let pokemonDetailList = [];
 
-  async function loadList(apiUrl) {
-    let fetchedData = await (await fetch(apiUrl)).json();
-    await fetchedData.results.forEach(async (pokemon) => {
-      await add({
-        name: pokemon.name,
-        detaillUrl: pokemon.url,
-      });
-    });
-    await pokemonList.map(async (pokemon) => {
-      const pokemonDetails = await (await fetch(pokemon.detaillUrl)).json();
-      await addDetails({
-        name: pokemonDetails.name,
-        img: pokemonDetails.sprites.front_default,
-        bigImg: pokemonDetails.sprites.other.dream_world.front_default,
-        height: pokemonDetails.height,
-        weight: pokemonDetails.weight,
-        types: pokemonDetails.types.map((item) => item.type.name),
-        id: pokemonDetails.id,
-        stats: pokemonDetails.stats,
-      });
-    });
-  }
+  async function loadList(api, page = 0) {
+    $("#loader").show();
 
-  async function addDetails(pokemons) {
-    await pokemonDetailList.push(pokemons);
-    pokemonDetailList = await pokemonDetailList.sort((a, b) => a.id - b.id);
-  }
-
-  async function add(pokemons) {
-    await pokemonList.push(pokemons);
-  }
-
-  async function addListItem(pokemon) {
-    let hp;
-    let attack;
-    let defense;
-    let speed;
-    if (pokemon.stats.length === 0) {
-      hp = "N/A";
-      attack = "N/A";
-      defense = "N/A";
-      speed = "N/A";
-    } else {
-      hp = pokemon.stats[0].base_stat;
-      attack = pokemon.stats[1].base_stat;
-      defense = pokemon.stats[2].base_stat;
-      speed = pokemon.stats[5].base_stat;
+    if ($(".pokeCard")) {
+      $(".pokeCard").remove();
     }
 
-    // Defining background color of each Pokemon card with their types
-    const color = () => {
-      if ($.inArray("fire", pokemon.types) !== -1) {
-        return "#FA5543";
-      }
-      if ($.inArray("poison", pokemon.types) !== -1) {
-        return "#A65B9E";
-      }
-      if ($.inArray("psychic", pokemon.types) !== -1) {
-        return "#FA65B5";
-      }
-      if ($.inArray("grass", pokemon.types) !== -1) {
-        return "#8CD851";
-      }
-      if ($.inArray("ground", pokemon.types) !== -1) {
-        return "#E8C755";
-      }
-      if ($.inArray("ice", pokemon.types) !== -1) {
-        return "#96F1FF";
-      }
-      if ($.inArray("rock", pokemon.types) !== -1) {
-        return "#CDBC72";
-      }
-      if ($.inArray("dragon", pokemon.types) !== -1) {
-        return "#8874FF";
-      }
-      if ($.inArray("water", pokemon.types) !== -1) {
-        return "#56AEFF";
-      }
-      if ($.inArray("bug", pokemon.types) !== -1) {
-        return "#C2D120";
-      }
-      if ($.inArray("dark", pokemon.types) !== -1) {
-        return "#8A6955";
-      }
-      if ($.inArray("fighting", pokemon.types) !== -1) {
-        return "#A75544";
-      }
-      if ($.inArray("ghost", pokemon.types) !== -1) {
-        return "#7874D4";
-      }
-      if ($.inArray("steel", pokemon.types) !== -1) {
-        return "#C4C2DB";
-      }
-      if ($.inArray("flying", pokemon.types) !== -1) {
-        return "#79A4FF";
-      }
-      if ($.inArray("electric", pokemon.types) !== -1) {
-        return "#FDE53C";
-      }
-      if ($.inArray("fairy", pokemon.types) !== -1) {
-        return "#F9AEFF";
-      }
-    };
+    let fetchedData = await (await fetch(api)).json();
+    const pokeList = fetchedData.results;
 
-    const pokerow = $(".pokerow");
-    const pokeCard = await document.createElement("button");
-    const imgContainer = await document.createElement("div");
-    const pokeImg = await document.createElement("img");
-    const pokeName = await document.createElement("div");
+    pokeList.map(async (pokemon) => {
+      try {
+        pokemonList.push(await (await fetch(pokemon.url)).json());
+      } catch (err) {
+        console.log(err);
+        pokemonList.push({});
+      }
 
-    $(pokeCard).addClass("pokeCard btn");
-    $(pokeCard).attr("type", "button");
-    $(pokeCard).attr("data-name", pokemon.name);
-    $(pokeCard).attr(
-      "data-bigImg",
-      pokemon.bigImg ? pokemon.bigImg : pokemon.img
-    );
-    $(pokeCard).attr("data-height", pokemon.height);
-    $(pokeCard).attr("data-weight", pokemon.weight);
-    $(pokeCard).attr("data-types", pokemon.types);
-    $(pokeCard).attr("data-id", pokemon.id);
-    $(pokeCard).attr("data-hp", hp);
-    $(pokeCard).attr("data-attack", attack);
-    $(pokeCard).attr("data-defense", defense);
-    $(pokeCard).attr("data-speed", speed);
-    $(pokeCard).attr("data-bgColor", color());
-
-    $(pokeCard).css("background-color", color());
-
-    $(imgContainer).addClass("imgContainer");
-    $(imgContainer).attr("src", pokemon.img);
-    $(imgContainer).attr("alt", `${pokemon.name}'s image`);
-
-    $(pokeImg).addClass("pokeImg img-fluid");
-    $(pokeImg).attr("src", pokemon.img);
-    $(pokeImg).attr("alt", pokemon.name);
-
-    $(pokeName).addClass("pokeName text-center text-wrap");
-    $(pokeName).html(pokemon.name);
-
-    await $(pokeCard).append(imgContainer);
-    await $(imgContainer).append(pokeImg);
-    await $(pokeCard).append(pokeName);
-    await $(pokerow).append(pokeCard);
-
-    $(window).mouseenter(() => {
-      $(".pokeImg")
-        .mouseenter((e) => {
-          $(e.target).addClass("animate__heartBeat");
+      new Promise((res, rej) => {
+        res(pokemonList);
+      })
+        .then((data) => {
+          if (data.length >= page + 131) {
+            if (data === null) return;
+            console.log(data);
+            const sorted = data.sort((a, b) => a.id - b.id);
+            const list = [...new Set(sorted.map(JSON.stringify))].map(
+              JSON.parse
+            );
+            list.map((item) => addListItem(item));
+          }
         })
-        .mouseleave((e) => {
-          $(e.target).removeClass("animate__heartBeat");
+        .then(() => {
+          setTimeout(() => {
+            $("#loader").hide();
+          }, 2000);
         });
     });
   }
+
+  function addListItem(pokemon) {
+    if (pokemon.id) {
+      console.log("count");
+      const pokerow = $(".pokerow");
+      const pokeCard = document.createElement("button");
+      const imgContainer = document.createElement("div");
+      const pokeImg = document.createElement("img");
+      const pokeName = document.createElement("div");
+
+      let hp;
+      let attack;
+      let defense;
+      let speed;
+      const types = pokemon.types
+        ? pokemon.types.map((item) => item.type.name)
+        : null;
+
+      if (!pokemon.stats) {
+        hp = "N/A";
+        attack = "N/A";
+        defense = "N/A";
+        speed = "N/A";
+      } else {
+        hp = pokemon.stats[0].base_stat;
+        attack = pokemon.stats[1].base_stat;
+        defense = pokemon.stats[2].base_stat;
+        speed = pokemon.stats[5].base_stat;
+      }
+
+      // Defining background color of each Pokemon card with their types
+      const color = () => {
+        if ($.inArray("fire", types) !== -1) {
+          return "#FA5543";
+        }
+        if ($.inArray("poison", types) !== -1) {
+          return "#A65B9E";
+        }
+        if ($.inArray("psychic", types) !== -1) {
+          return "#FA65B5";
+        }
+        if ($.inArray("grass", types) !== -1) {
+          return "#8CD851";
+        }
+        if ($.inArray("ground", types) !== -1) {
+          return "#E8C755";
+        }
+        if ($.inArray("ice", types) !== -1) {
+          return "#96F1FF";
+        }
+        if ($.inArray("rock", types) !== -1) {
+          return "#CDBC72";
+        }
+        if ($.inArray("dragon", types) !== -1) {
+          return "#8874FF";
+        }
+        if ($.inArray("water", types) !== -1) {
+          return "#56AEFF";
+        }
+        if ($.inArray("bug", types) !== -1) {
+          return "#C2D120";
+        }
+        if ($.inArray("dark", types) !== -1) {
+          return "#8A6955";
+        }
+        if ($.inArray("fighting", types) !== -1) {
+          return "#A75544";
+        }
+        if ($.inArray("ghost", types) !== -1) {
+          return "#7874D4";
+        }
+        if ($.inArray("steel", types) !== -1) {
+          return "#C4C2DB";
+        }
+        if ($.inArray("flying", types) !== -1) {
+          return "#79A4FF";
+        }
+        if ($.inArray("electric", types) !== -1) {
+          return "#FDE53C";
+        }
+        if ($.inArray("fairy", types) !== -1) {
+          return "#F9AEFF";
+        }
+      };
+
+      $(pokeCard).addClass("pokeCard btn");
+      $(pokeCard).attr("type", "button");
+      $(pokeCard).attr("data-name", pokemon.name);
+      $(pokeCard).attr(
+        "data-bigImg",
+        pokemon.sprites.other.dream_world.front_default
+          ? pokemon.sprites.other.dream_world.front_default
+          : pokemon.sprites.front_default
+      );
+      $(pokeCard).attr("data-height", pokemon.height);
+      $(pokeCard).attr("data-weight", pokemon.weight);
+      $(pokeCard).attr("data-types", types);
+      $(pokeCard).attr("data-id", pokemon.id);
+      $(pokeCard).attr("data-hp", hp);
+      $(pokeCard).attr("data-attack", attack);
+      $(pokeCard).attr("data-defense", defense);
+      $(pokeCard).attr("data-speed", speed);
+      $(pokeCard).attr("data-bgColor", color());
+
+      $(pokeCard).css("background-color", color());
+
+      $(imgContainer).addClass("imgContainer");
+      $(imgContainer).attr("alt", `${pokemon.name}'s image`);
+
+      $(pokeImg).addClass("pokeImg img-fluid");
+      $(pokeImg).attr("src", pokemon.sprites.front_default);
+      $(pokeImg).attr("alt", pokemon.name);
+
+      $(pokeName).addClass("pokeName text-center text-wrap");
+      $(pokeName).html(pokemon.name);
+
+      $(pokeCard).append(imgContainer);
+      $(imgContainer).append(pokeImg);
+      $(pokeCard).append(pokeName);
+      $(pokerow).append(pokeCard);
+
+      $(window).mouseenter(() => {
+        $(".pokeImg")
+          .mouseenter((e) => {
+            $(e.target).addClass("animate__heartBeat");
+          })
+          .mouseleave((e) => {
+            $(e.target).removeClass("animate__heartBeat");
+          });
+      });
+    }
+  }
+
   function createModal(data) {
     $(".modal_id").text(`#${data.id}`);
     $(".profile_height").text(`${(data.height * 0.1).toFixed(1)}M`);
@@ -181,7 +198,6 @@ const pokemonRepository = (() => {
     loadList,
     addListItem,
     createModal,
-    pokemonList: pokemonDetailList,
   };
 })();
 
@@ -278,55 +294,20 @@ $(window).click((e) => {
   });
 });
 
-function init(api, curpage) {
-  $("#loader").show();
-  pokemonRepository.loadList(api).then(() => {
-    curpage
-      ? (pokemonRepository.pokemonList = Array.from(
-          new Set(pokemonRepository.pokemonList.map(JSON.stringify))
-        ).map(JSON.parse))
-      : null;
-
-    console.log(pokemonRepository.pokemonList);
-    setTimeout(() => {
-      pokemonRepository.pokemonList.forEach((pokemon) => {
-        pokemonRepository.addListItem(pokemon);
-      });
-      $("#loader").hide();
-    }, 3000);
-  });
-}
-
 // Infinite scroll --- several pokemons with high ID# are missing many info on API
+let currentscrollHeight = 0;
+let pg = 131;
 
 $(window).on("scroll", () => {
-  const { scrollHeight } = document.documentElement;
-  const scrollPos = $(window).height() + $(window).scrollTop();
-  if ((scrollHeight - scrollPos) / scrollHeight < 0.001) {
-    // Removes duplicates
-    const data = [
-      ...new Set(pokemonRepository.pokemonList.map(JSON.stringify)),
-    ].map(JSON.parse);
-    const curPage = data.length;
+  const scrollHeight = $(document).height();
+  const scrollPos = Math.floor($(window).height() + $(window).scrollTop());
+  const isBottom = scrollHeight - 300 < scrollPos;
 
-    pokemonRepository.loadList(apiUrl(curPage)).then(async () => {
-      $("#loader").show();
-      setTimeout(() => {
-        const data = [
-          ...new Set(pokemonRepository.pokemonList.map(JSON.stringify)),
-        ].map(JSON.parse);
-        const cutData = data.splice(curPage);
+  if (isBottom && currentscrollHeight < scrollHeight) {
+    pokemonRepository.loadList(apiUrl(pg), pg);
 
-        // Sort by Pokemon ID
-        const added = cutData.sort((a, b) => {
-          return a.id - b.id;
-        });
-        added.forEach((pokemon) => {
-          pokemonRepository.addListItem(pokemon);
-        });
-        $("#loader").hide();
-      }, 3000);
-    });
+    console.log("scroll");
+    currentscrollHeight = scrollHeight;
   }
 });
 
@@ -341,4 +322,4 @@ $(document).ready(() => {
   });
 });
 
-init(apiUrl(0));
+pokemonRepository.loadList(apiUrl(0));
